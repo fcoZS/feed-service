@@ -4,6 +4,7 @@ import {NextFunction} from 'connect';
 import * as jwt from 'jsonwebtoken';
 import * as AWS from '../../../../aws';
 import * as c from '../../../../config/config';
+import { uuid } from 'uuidv4';
 
 const router: Router = Router();
 
@@ -28,6 +29,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
 // Get all feed items
 router.get('/', async (req: Request, res: Response) => {
+  console.log(new Date().toLocaleString() + `: ${uuid()} - request for all feeds`);
   const items = await FeedItem.findAndCountAll({order: [['id', 'DESC']]});
   items.rows.map((item) => {
     if (item.url) {
@@ -42,6 +44,7 @@ router.get('/:id',
     async (req: Request, res: Response) => {
       const {id} = req.params;
       const item = await FeedItem.findByPk(id);
+      console.log(new Date().toLocaleString() + `: ${uuid()} - request for feed ${id}`);
       res.send(item);
     });
 
